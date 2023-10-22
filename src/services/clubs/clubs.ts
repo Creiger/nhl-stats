@@ -31,7 +31,7 @@ const fetchMatches = async (app: Application) => {
   const matchTypes = ['club_private'];
   const eaUrl = 'https://proclubs.ea.com/api/nhl/clubs/matches';
   const clubs = (<any> await app.service('clubs').find({query: {fetchData: true, $select: ['clubId']}}))?.map((club: any) => club.clubId);
-  const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
+  const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']});
   for (const clubId of clubs) {
     for (const matchType of matchTypes) {
       const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
