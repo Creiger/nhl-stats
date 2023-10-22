@@ -28,7 +28,7 @@ export const matches = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: matchesMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
+    events: [],
   })
   // Initialize hooks
   app.service(matchesPath).hooks({
@@ -59,7 +59,8 @@ export const matches = (app: Application) => {
     },
     before: {
       all: [schemaHooks.validateQuery(matchesQueryValidator), schemaHooks.resolveQuery(matchesQueryResolver)],
-      find: [],
+      find: [
+      ],
       get: [],
       create: [schemaHooks.validateData(matchesDataValidator), schemaHooks.resolveData(matchesDataResolver)],
       patch: [schemaHooks.validateData(matchesPatchValidator), schemaHooks.resolveData(matchesPatchResolver)],

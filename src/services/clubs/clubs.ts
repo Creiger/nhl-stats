@@ -39,10 +39,13 @@ const fetchMatches = async (app: Application) => {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');
         const response = await page.goto(clubUrl);
-        const matches = JSON.parse(await response?.text() || '{}');
+        const responseText = await response?.text();
+        const matches = JSON.parse(responseText || '{}');
         for (const match of matches) {
           match.createdAt = new Date(match.timestamp * 1000);
           match.matchType = matchType;
+          match.clubIds = Object.keys(match.clubs);
+          match.playerIds = match.clubIds.map((clubId: any) => Object.keys(match.players[clubId])).flat();
           try {
             await app.service('matches').create(match);
           } catch (e) {

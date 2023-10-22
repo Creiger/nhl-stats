@@ -21,6 +21,7 @@ export class MatchesService<ServiceParams extends Params = MatchesParams> extend
 export const getOptions = (app: Application): MongoDBAdapterOptions => {
   return {
     paginate: app.get('paginate'),
-    Model: app.get('mongodbClient').then((db) => db.collection('matches'))
+    Model: app.get('mongodbClient').then((db) => db.collection('matches')),
+    operators: ['$exists']
   }
 }

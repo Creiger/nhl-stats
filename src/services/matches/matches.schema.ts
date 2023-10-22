@@ -17,6 +17,8 @@ export const matchesSchema = Type.Object({
     clubs: Type.Object({}),
     players: Type.Object({}),
     aggregate: Type.Object({}),
+    clubIds: Type.Union([Type.String(), Type.Array(Type.String())], {default: []}),
+    playerIds: Type.Union([Type.String(), Type.Array(Type.String())], {default: []}),
     league: Type.String()
   },
   { $id: 'Matches', additionalProperties: false }
@@ -49,9 +51,9 @@ export const matchesQuerySchema = Type.Intersect(
   [
     querySyntax(matchesQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({}, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type MatchesQuery = Static<typeof matchesQuerySchema>
 export const matchesQueryValidator = getValidator(matchesQuerySchema, queryValidator)
