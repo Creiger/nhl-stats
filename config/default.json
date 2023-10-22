@@ -1,0 +1,35 @@
+{
+  "host": "localhost",
+  "port": 3030,
+  "public": "./public/",
+  "origins": [
+    "http://localhost:3030"
+  ],
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "mongodb": "mongodb://127.0.0.1:27017/nhl",
+  "authentication": {
+    "entity": "user",
+    "service": "users",
+    "secret": "9HyxZyfi/Y72NOge55iJQuHk5tM=",
+    "authStrategies": [
+      "jwt",
+      "local"
+    ],
+    "jwtOptions": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "https://yourdomain.com",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "local": {
+      "usernameField": "login",
+      "passwordField": "password"
+    }
+  }
+}
