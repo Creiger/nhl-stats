@@ -34,7 +34,22 @@ export const matches = (app: Application) => {
   app.service(matchesPath).hooks({
     around: {
       all: [
-        // authenticate('jwt'),
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(matchesExternalResolver),
+        schemaHooks.resolveResult(matchesResolver)
+      ],
+      create: [
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(matchesExternalResolver),
+        schemaHooks.resolveResult(matchesResolver)
+      ],
+      patch: [
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(matchesExternalResolver),
+        schemaHooks.resolveResult(matchesResolver)
+      ],
+      remove: [
+        authenticate('jwt'),
         schemaHooks.resolveExternal(matchesExternalResolver),
         schemaHooks.resolveResult(matchesResolver)
       ]
