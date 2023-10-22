@@ -59,7 +59,6 @@
     "@feathersjs/transport-commons": "^5.0.8",
     "@feathersjs/typebox": "^5.0.8",
     "cors-anywhere": "^0.4.4",
-    "headless-chromium": "^0.0.1-prerelease.1",
     "mongodb": "^5.7.0",
     "puppeteer": "^21.4.0",
     "winston": "^3.10.0"

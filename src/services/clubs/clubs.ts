@@ -91,7 +91,10 @@ export const clubs = (app: Application) => {
       all: []
     }
   })
-  setInterval(() => fetchMatches(app), 1000 * 60 * 1);
+  if (process.env.FETCH_DATA) {
+    console.log('Starting fetch data');
+    setInterval(() => fetchMatches(app), 1000 * 60 * 1);
+  }
 }
 
 // Add this service to the service type index
