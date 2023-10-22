@@ -33,8 +33,11 @@ export const matches = (app: Application) => {
   // Initialize hooks
   app.service(matchesPath).hooks({
     around: {
-      all: [
-        authenticate('jwt'),
+      get: [
+        schemaHooks.resolveExternal(matchesExternalResolver),
+        schemaHooks.resolveResult(matchesResolver)
+      ],
+      find: [
         schemaHooks.resolveExternal(matchesExternalResolver),
         schemaHooks.resolveResult(matchesResolver)
       ],
