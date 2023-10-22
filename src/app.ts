@@ -40,9 +40,7 @@ app.configure(channels)
 
 // Register hooks that run on all service methods
 app.hooks({
-  around: {
-    all: [logError]
-  },
+  around: {},
   before: {},
   after: {},
   error: {}

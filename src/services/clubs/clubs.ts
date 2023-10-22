@@ -35,10 +35,9 @@ const fetchMatches = async (app: Application) => {
   for (const clubId of clubs) {
     for (const matchType of matchTypes) {
       const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
-      console.log(clubUrl);
       try {
         const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');
+        await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
         const response = await page.goto(clubUrl);
         const responseText = await response?.text();
         const matches = JSON.parse(responseText || '{}');
@@ -50,7 +49,6 @@ const fetchMatches = async (app: Application) => {
           try {
             await app.service('matches').create(match);
           } catch (e) {
-            console.log(e);
           }
         }
       } catch (error) {
@@ -94,7 +92,7 @@ export const clubs = (app: Application) => {
     }
   })
   fetchMatches(app);
-  setInterval(() => fetchMatches(app), 1000 * 60 * 1);
+  setInterval(() => fetchMatches(app), 1000 * 60 * 2);
 }
 
 // Add this service to the service type index
