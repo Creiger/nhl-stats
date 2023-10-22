@@ -30,11 +30,11 @@ export * from './clubs.schema'
 const fetchMatches = async (app: Application) => {
   const matchTypes = ['club_private'];
   const eaUrl = 'https://proclubs.ea.com/api/nhl/clubs/matches';
-  const clubs = (<any> await app.service('clubs').find({query: {fetchData: true, $select: ['eaId']}}))?.map((club: any) => club.eaId);
+  const clubs = (<any> await app.service('clubs').find({query: {fetchData: true, $select: ['clubId']}}))?.map((club: any) => club.clubId);
   const browser = await puppeteer.launch({headless: true});
-  for (const eaId of clubs) {
+  for (const clubId of clubs) {
     for (const matchType of matchTypes) {
-      const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${eaId}`;
+      const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
       try {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');

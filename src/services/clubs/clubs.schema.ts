@@ -11,7 +11,7 @@ import { dataValidator, queryValidator } from '../../validators'
 export const clubsSchema = Type.Object(
   {
     _id: ObjectIdSchema(),
-    eaId: Type.Number(),
+    clubId: Type.Number(),
     name: Type.String(),
     fetchData: Type.Boolean()
   },
