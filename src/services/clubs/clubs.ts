@@ -50,9 +50,10 @@ const fetchMatches = async (app: Application) => {
             await app.service('matches').create(match);
           } catch (e) {
           }
+          await page.close();
         }
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     }
   }
