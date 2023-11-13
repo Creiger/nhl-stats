@@ -22,6 +22,7 @@ export const getOptions = (app: Application): MongoDBAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('mongodbClient').then((db) => db.collection('matches')),
+    multi: ['create'],
     operators: ['$exists']
   }
 }

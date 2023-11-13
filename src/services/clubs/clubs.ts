@@ -30,34 +30,53 @@ export * from './clubs.schema'
 const fetchMatches = async (app: Application) => {
   const matchTypes = ['club_private'];
   const eaUrl = 'https://proclubs.ea.com/api/nhl/clubs/matches';
-  const clubs = (<any> await app.service('clubs').find({query: {fetchData: true, $select: ['clubId']}}))?.map((club: any) => club.clubId);
-  const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']});
-  for (const clubId of clubs) {
-    for (const matchType of matchTypes) {
-      const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
-      try {
-        const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
-        const response = await page.goto(clubUrl);
-        const responseText = await response?.text();
-        const matches = JSON.parse(responseText || '{}');
-        for (const match of matches) {
-          match.createdAt = new Date(match.timestamp * 1000);
-          match.matchType = matchType;
-          match.clubIds = Object.keys(match.clubs);
-          match.playerIds = match.clubIds.map((clubId: any) => Object.keys(match.players[clubId])).flat();
-          try {
-            await app.service('matches').create(match);
-          } catch (e) {
+  try {
+    const clubs = (<any>await app.service('clubs').find({
+      query: {
+        fetchData: true,
+        $select: ['clubId']
+      }
+    }))?.map((club: any) => club.clubId);
+    const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    const newMatches: any = [];
+    for (const clubId of clubs) {
+      for (const matchType of matchTypes) {
+        const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
+        try {
+          const page = await browser.newPage();
+          await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
+          const response = await page.goto(clubUrl);
+          const responseText = await response?.text();
+          let matches = JSON.parse(responseText || '{}');
+          for (const match of matches) {
+            match.createdAt = new Date(match.timestamp * 1000);
+            match.matchType = matchType;
+            match.clubIds = Object.keys(match.clubs);
+            match.playerIds = match.clubIds.map((clubId: any) => Object.keys(match.players[clubId])).flat();
           }
+          newMatches.push(...matches.filter((m: any ) => !(new Set(newMatches.map((nm: any) => nm.matchId)).has(m.matchId))));
           await page.close();
+        } catch (error) {
         }
-      } catch (error) {
-        //console.log(error);
       }
     }
+    await browser.close();
+    const existingMatches: any = await app.service('matches').find({
+      paginate: false,
+      query: {
+        matchId: {$in: newMatches.map((match: any) => match.matchId)},
+        $select: ['matchId']
+      }
+    });
+    const insertMatches = newMatches.filter((m: any) => !existingMatches.find((em: any) => em.matchId === m.matchId));
+    try {
+      if (insertMatches.length) {
+        await app.service('matches').create(insertMatches);
+      }
+    } catch (e) {
+    }
+  } catch (e) {
   }
-  await browser.close();
 }
 
 export const clubs = (app: Application) => {
