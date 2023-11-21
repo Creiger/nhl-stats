@@ -18,9 +18,9 @@ import type { Application } from '../../declarations'
 import { ClubsService, getOptions } from './clubs.class'
 import { clubsPath, clubsMethods } from './clubs.shared'
 
-import puppeteer from 'puppeteer';
 // @ts-ignore
 import cors_proxy from 'cors-anywhere';
+import axios from "axios";
 
 export * from './clubs.class'
 export * from './clubs.schema'
@@ -37,17 +37,22 @@ const fetchMatches = async (app: Application) => {
         $select: ['clubId']
       }
     }))?.map((club: any) => club.clubId);
-    const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const newMatches: any = [];
     for (const clubId of clubs) {
       for (const matchType of matchTypes) {
         const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
         try {
-          const page = await browser.newPage();
-          await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
-          const response = await page.goto(clubUrl);
-          const responseText = await response?.text();
-          let matches = JSON.parse(responseText || '{}');
+          const response = await axios.get(clubUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
+              'Accept-Language': 'en-US,en;q=0.9',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+              'Accept-Encoding': 'gzip, deflate, br',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive'
+            },
+          });
+          let matches = response.data;
           for (const match of matches) {
             match.createdAt = new Date(match.timestamp * 1000);
             match.matchType = matchType;
@@ -55,12 +60,10 @@ const fetchMatches = async (app: Application) => {
             match.playerIds = match.clubIds.map((clubId: any) => Object.keys(match.players[clubId])).flat();
           }
           newMatches.push(...matches.filter((m: any ) => !(new Set(newMatches.map((nm: any) => nm.matchId)).has(m.matchId))));
-          await page.close();
         } catch (error) {
         }
       }
     }
-    await browser.close();
     const existingMatches: any = await app.service('matches').find({
       paginate: false,
       query: {
@@ -76,6 +79,7 @@ const fetchMatches = async (app: Application) => {
     } catch (e) {
     }
   } catch (e) {
+    console.log(e);
   }
 }
 
