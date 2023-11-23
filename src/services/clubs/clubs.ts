@@ -44,6 +44,7 @@ const fetchMatches = async (app: Application) => {
         console.log(clubUrl);
         try {
           const response = await axios.get(clubUrl, {
+            withCredentials: true,
             headers: {
               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
               'Accept-Encoding': 'gzip, deflate, br',
@@ -59,8 +60,7 @@ const fetchMatches = async (app: Application) => {
               'Sec-Fetch-User': '?1',
               'Upgrade-Insecure-Requests': '1',
               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-
-            }
+            },
           });
           let matches = response.data;
           console.log(matches);
