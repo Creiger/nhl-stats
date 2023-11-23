@@ -41,7 +41,6 @@ const fetchMatches = async (app: Application) => {
     for (const clubId of clubs) {
       for (const matchType of matchTypes) {
         const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
-        console.log(clubUrl);
         try {
           const response = await axios.get(clubUrl, {
             headers: {
@@ -50,11 +49,11 @@ const fetchMatches = async (app: Application) => {
               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
               'Accept-Encoding': 'gzip, deflate, br',
               'Cache-Control': 'no-cache',
-              'Connection': 'keep-alive'
+              'Connection': 'keep-alive',
+              'Referer': 'https://www.ea.com/'
             }
           });
           let matches = response.data;
-          console.log(matches);
           for (const match of matches) {
             match.createdAt = new Date(match.timestamp * 1000);
             match.matchType = matchType;
@@ -63,7 +62,6 @@ const fetchMatches = async (app: Application) => {
           }
           newMatches.push(...matches.filter((m: any ) => !(new Set(newMatches.map((nm: any) => nm.matchId)).has(m.matchId))));
         } catch (error) {
-          console.log(error);
         }
       }
     }
@@ -118,8 +116,14 @@ export const clubs = (app: Application) => {
       all: []
     }
   })
-  fetchMatches(app);
-  setInterval(() => fetchMatches(app), 1000 * 60 * 2);
+  if (process.env.FETCH_MATCHES) {
+    fetchMatches(app);
+    setInterval(() => fetchMatches(app), 1000 * 60 * 2);
+  } else {
+    setInterval(() => {
+      axios.get('https://nhl-stats.adaptable.app/');
+    }, 1000 * 60 * 5);
+  }
 }
 
 // Add this service to the service type index
