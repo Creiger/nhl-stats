@@ -41,6 +41,7 @@ const fetchMatches = async (app: Application) => {
     for (const clubId of clubs) {
       for (const matchType of matchTypes) {
         const clubUrl = `${eaUrl}?platform=common-gen5&matchType=${matchType}&clubIds=${clubId}`;
+        console.log(clubUrl);
         try {
           const response = await axios.get(clubUrl, {
             headers: {
@@ -53,6 +54,7 @@ const fetchMatches = async (app: Application) => {
             },
           });
           let matches = response.data;
+          console.log(matches);
           for (const match of matches) {
             match.createdAt = new Date(match.timestamp * 1000);
             match.matchType = matchType;
@@ -61,6 +63,7 @@ const fetchMatches = async (app: Application) => {
           }
           newMatches.push(...matches.filter((m: any ) => !(new Set(newMatches.map((nm: any) => nm.matchId)).has(m.matchId))));
         } catch (error) {
+          console.log(error);
         }
       }
     }
