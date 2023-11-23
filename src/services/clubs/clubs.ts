@@ -45,13 +45,22 @@ const fetchMatches = async (app: Application) => {
         try {
           const response = await axios.get(clubUrl, {
             headers: {
-              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36',
-              'Accept-Language': 'en-US,en;q=0.9',
-              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
               'Accept-Encoding': 'gzip, deflate, br',
-              'Cache-Control': 'no-cache',
-              'Connection': 'keep-alive'
-            },
+              'Accept-Language': 'cs-CZ,cs;q=0.9,en;q=0.8',
+              'Cache-Control': 'max-age=0',
+              'Cookie': 'ealocale=cs-cz; ak_bmsc=C2F49B2E13530289DBF9875946335E85~000000000000000000000000000000~YAAQEyhDF/yGrs+LAQAAIWvY/RXfM6MURDiB2Klg0ojWkZvoS75R/64PTd4O364QpOCF6t2AodAbLEctMgt/qnPdrMY70HaYv0nXkjIwNCPWFTDfBeTYdzyVuNZWws8NEjMRw0A/+lz91UAQgMZJxRLrwbJxtQk2mXT46kZgs4J63SHVrNyjszGvuMGbUQ1qZqot5ZkrYrdzti9ELLnzC5CW3CFn45c853yUY9GLtyPfrFb+3ysxC4NpfSR+b8+o4BaI2/AsugXdHTrQcRuHQPnJaJ7zDdKz/osCKGeI6aOCwKi1nCUN0y7Bw7Iea42VSHTjIWhRwoEnCUqGOshQhdWmfiGyE7VOryncUv1HjRyONavm6J9oP0n+Bkj1eTqzsEBBNXg=',
+              'Sec-Ch-Ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
+              'Sec-Ch-Ua-Mobile': '?0',
+              'Sec-Ch-Ua-Platform': '"macOS"',
+              'Sec-Fetch-Dest': 'document',
+              'Sec-Fetch-Mode': 'navigate',
+              'Sec-Fetch-Site': 'none',
+              'Sec-Fetch-User': '?1',
+              'Upgrade-Insecure-Requests': '1',
+              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+
+            }
           });
           let matches = response.data;
           console.log(matches);
